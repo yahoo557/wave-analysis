@@ -25,6 +25,8 @@ import pandas as pd
 # plt.subplots_adjust(wspace= 0.5)
 # plt.show()
 
+def animate(i):
+    return
 
 data_period = pd.read_csv("동해바다_파주기_통합본.csv", encoding="cp949")
 data_direction = pd.read_csv("동해바다_파향_통합본.csv", encoding="cp949")
