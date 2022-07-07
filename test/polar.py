@@ -15,10 +15,7 @@ ax = fig.subplots(1,3,subplot_kw={'projection': 'polar'})
 
 ax[0].plot(theta1, r1)
 ax[1].plot(theta2, r2)
-for d in frames:
-    artists = func(d, *fargs)
-    fig.canvas.draw_idle()
-    fig.canvas.start_event_loop(interval)
+
 
 for i in range(3):
     ax[i].set_rmax(10) 
