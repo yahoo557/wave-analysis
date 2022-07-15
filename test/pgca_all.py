@@ -37,7 +37,7 @@ intercept5 = 0
 
 
 for j in range(74927, alldata.shape[0] - 14):
-    fig = plt.figure(figsize=(15,10))
+    fig = plt.figure(figsize=(30,10))
     date = []
     for i in range(j , j + 7):
         date.append(data_perod["일시"][i])
