@@ -9,6 +9,7 @@ alldata_height = pd.read_csv("./동해바다_유의파고_통합본.csv" ,encodi
 themax = 0
 for i in range(2,8):
     heremax = max(alldata.iloc[:,i])
+    print(heremax)
     if heremax >= themax: themax = heremax
 
 
