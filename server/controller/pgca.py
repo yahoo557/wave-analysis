@@ -17,9 +17,4 @@ for i in range(2,8):
         temp = max(data_height.iloc[:,i]);
 
 
-for j in range(74927, data_period.shape[0]-14):
-
-    
-
-
-
+# for j in range(74927, data_period.shape[0]-14):

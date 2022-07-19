@@ -1,5 +1,6 @@
 from typing import Optional
 from fastapi import FastAPI
+from pymongo import MongoClient
 
 import uvicorn
 
@@ -11,8 +12,8 @@ app = FastAPI()
 
 
 
-def read_item(home_id:int, away:id ,q:Optional[str]= None):
-    return {"item_id":home_id,  "q":q}
+def read_item():
+    return {}
 
 if __name__ == "__main__":
     uvicorn.run(app, host ="0.0.0.0", port = 8001 ) 
