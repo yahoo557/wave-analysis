@@ -36,7 +36,7 @@ db = db_client['buoy']['daily']
 date_now = datetime.now().timestamp()
 
 index = {'울릉도':1, "동해":6, "포항":7, "울산": 16, "울진":17, "동해78":26}
-if db.find_one({"date":get_half_time()}) == "None":
+if str(db.find_one({"date":get_half_time()})) == 'None':
 #울릉도, 동해, 동해78, 울진, 울산, 포항 해양 기상 부이 30분 마다 스크래핑
     driver = set_chrome_driver()
     url = 'https://www.weather.go.kr/w/obs-climate/sea/buoy.do'
@@ -46,27 +46,38 @@ if db.find_one({"date":get_half_time()}) == "None":
     date_format = "%Y년 %m월 %d일 %H시 %M분"
     datetime_timestamp = datetime.strptime(date[14:], date_format).timestamp()
 
-    db_format = {date : datetime_timestamp}
-    
-    db.insert_one({
-        
-    })  
+    # 2) date가 서로 다르다면 data가 갱신된것으로 간주, 스크래핑을 한다.
+    # 참고 : 각기상부이 데이터별 xpath <tr>태그 인덱스 : 울릉도, 동해, 포항, 울산, 울진, 동해78 순으로 : 1, 6, 7, 17, 26 
+    if(get_half_time()==datetime_timestamp):
+        db_format = {"date" : datetime_timestamp}
+        for i in index:
+            element_dict = {}
+            element_key = ["maximum", "significant", "mean", "period", "direction"]
+            k = index.get(i)
+            if k == 1 :
+                for j in range (5):
+                    element_dict[element_key[j]] = driver.find_element("xpath",'//*[@id="sea-buoy-data-holder"]/table/tbody/tr[%d]/td[%d]'% (k, j+10)).get_attribute("innerHTML")
+            else:
+                for j in range (5):
+                    element_dict[element_key[j]] = driver.find_element("xpath",'//*[@id="sea-buoy-data-holder"]/table/tbody/tr[%d]/td[%d]'% (k, j+9)).get_attribute("innerHTML")
+            db_format[i] = element_dict
+            
+        # 3) 스크래핑 해온 데이터를 DB에 저장.
+        db.insert_one(db_format)
+        print(get_half_time(),": 최신화를 완료했습니다.")    
+        driver.quit()
+    else:
+        print("웹에 데이터가 갱신되지 않았습니다.")
+else:
+    print(get_half_time(),": 최신상태입니다.")    
 
-# 2) date가 서로 다르다면 data가 갱신된것으로 간주, 스크래핑을 한다.
-# 참고 : 각기상부이 데이터별 xpath <tr>태그 인덱스 : 
-#       울릉도, 동해, 포항, 울산, 울진, 동해78 순으로 : 1, 6, 7, 17, 26 
-# for i in index:
-#     k = index.get(i)
-#     text = '        '
-#     for j in range (3):
-#         element = driver.find_element("xpath",'//*[@id="sea-buoy-data-holder"]/table/tbody/tr[%d]/td[%d]'% (k, j+10))
-#         text = text+ "  " + element.get_attribute("innerHTML")
-#     print(text)
-# driver.quit()
 
 
 
 
 
-# 3) 스크래핑 해온 데이터를 DB에 저장.
+
+
+
+
 
