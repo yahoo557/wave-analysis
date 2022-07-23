@@ -67,7 +67,7 @@ if str(db.find_one({"date":get_half_time()})) == 'None':
         print(get_half_time(),": 최신화를 완료했습니다.")    
         driver.quit()
     else:
-        print("웹에 데이터가 갱신되지 않았습니다.")
+        print(get_half_time(),": 웹에 데이터가 갱신되지 않았습니다.")
 else:
     print(get_half_time(),": 최신상태입니다.")    
 
