@@ -3,13 +3,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import time
 
-alldata = pd.read_csv("./동해바다_파주기_통합본.csv",encoding='cp949')
-alldata_height = pd.read_csv("./동해바다_유의파고_통합본.csv" ,encoding='cp949')
+alldata = pd.read_csv("/Users/seungbaek/Desktop/호텔/파도분석/data/combineddata/동해바다_파주기_통합본.csv",encoding='cp949')
+alldata_height = pd.read_csv("/Users/seungbaek/Desktop/호텔/파도분석/data/combineddata/동해바다_유의파고_통합본.csv" ,encoding='cp949')
 # 전체 데이터 중 주기의 최댓값 찾기
 themax = 0
 for i in range(2,8):
     heremax = max(alldata.iloc[:,i])
-    print(heremax)
     if heremax >= themax: themax = heremax
 
 
@@ -19,11 +18,21 @@ for i in range(2,8):
 #     if heremax >= heightmax: heightmax = heremax
 
 # 파주기, 유의파고가 있는 통합본 불러오기, fillna로 nan값 0으로
-data_perod = pd.read_csv("동해바다_파주기_통합본.csv", encoding='cp949')
+data_perod = pd.read_csv("/Users/seungbaek/Desktop/호텔/파도분석/data/combineddata/동해바다_파주기_통합본.csv", encoding='cp949')
 data_perod = data_perod.fillna(0)
 # data_period = data_perod.set_index('일시')
-data_height = pd.read_csv("동해바다_유의파고_통합본.csv", encoding='cp949')
+data_height = pd.read_csv("/Users/seungbaek/Desktop/호텔/파도분석/data/combineddata/동해바다_유의파고_통합본.csv", encoding='cp949')
 data_height = data_height.fillna(0)
+
+start_index = data_height.loc[data_height["일시"]=="2011.1.4 00:00" ].index.values[0]
+end_index = data_height.loc[data_height["일시"]=="2012.1.2 00:00" ].index.values[0]
+template = {1:"울릉도", 2:"동해", 3:"포항", 4:"울산", 5:"울진", 6:"동해78"}
+
+print(template[5])
+# print(type(data_height['울릉도'][start_index:end_index].to_list()))
+
+
+
 # data_height = data_height.set_index('일시')
 # data_perod['일시'] = pd.to_datetime(data_perod['일시'])
 # data_height['일시'] = pd.to_datetime(data_height['일시'])
@@ -37,59 +46,59 @@ intercept4 = 0
 intercept5 = 0
 
 
-for j in range(74927, alldata.shape[0] - 14):
-    fig = plt.figure(figsize=(30,10))
-    date = []
-    for i in range(j , j + 7):
-        date.append(data_perod["일시"][i])
+# for j in range(74927, alldata.shape[0] - 14):
+#     fig = plt.figure(figsize=(8,5))
+#     date = []
+#     for i in range(j , j + 7):
+#         date.append(data_perod["일시"][i])
 
-        plt.subplot(5,1,1)    
-        intercept1 += (themax - data_perod['울릉도'][i])/2
-        plt.plot([intercept1, intercept1 + data_perod['울릉도'][i]/4], [0, data_height['울릉도'][i]], color='green')
-        plt.plot([intercept1 + data_perod['울릉도'][i]/4, intercept1 + (3 * data_perod['울릉도'][i] / 4)], [data_height['울릉도'][i], -1 * data_height['울릉도'][i]], color='green')
-        plt.plot([intercept1 + (3 * data_perod['울릉도'][i] / 4), intercept1 + data_perod['울릉도'][i]], [-1 * data_height['울릉도'][i],0], color ='green')
-        intercept1 += (themax + data_perod['울릉도'][i])/2
-        plt.title("ulreung")
-        plt.ylim([-8, 8])
+#         plt.subplot(5,1,1)    
+#         intercept1 += (themax - data_perod['울릉도'][i])/2
+#         plt.plot([intercept1, intercept1 + data_perod['울릉도'][i]/4], [0, data_height['울릉도'][i]], color='green')
+#         plt.plot([intercept1 + data_perod['울릉도'][i]/4, intercept1 + (3 * data_perod['울릉도'][i] / 4)], [data_height['울릉도'][i], -1 * data_height['울릉도'][i]], color='green')
+#         plt.plot([intercept1 + (3 * data_perod['울릉도'][i] / 4), intercept1 + data_perod['울릉도'][i]], [-1 * data_height['울릉도'][i],0], color ='green')
+#         intercept1 += (themax + data_perod['울릉도'][i])/2
+#         plt.title("ulreung")
+#         plt.ylim([-8, 8])
         
-        plt.subplot(5,1,2)
-        intercept2 += (themax - data_perod['동해'][i])/2
-        plt.plot([intercept2, intercept2 + data_perod['동해'][i]/4], [0, data_height['동해'][i]], color='green')
-        plt.plot([intercept2 + data_perod['동해'][i]/4, intercept2 + (3 * data_perod['동해'][i] / 4)], [data_height['동해'][i], -1 * data_height['동해'][i]], color='green')
-        plt.plot([intercept2 + (3 * data_perod['동해'][i] / 4), intercept2 + data_perod['동해'][i]], [-1 * data_height['동해'][i],0], color ='green')
-        intercept2 += (themax + data_perod['동해'][i])/2    
-        plt.title("donghae") 
-        plt.ylim([-8, 8])
+        # plt.subplot(5,1,2)
+        # intercept2 += (themax - data_perod['동해'][i])/2
+        # plt.plot([intercept2, intercept2 + data_perod['동해'][i]/4], [0, data_height['동해'][i]], color='green')
+        # plt.plot([intercept2 + data_perod['동해'][i]/4, intercept2 + (3 * data_perod['동해'][i] / 4)], [data_height['동해'][i], -1 * data_height['동해'][i]], color='green')
+        # plt.plot([intercept2 + (3 * data_perod['동해'][i] / 4), intercept2 + data_perod['동해'][i]], [-1 * data_height['동해'][i],0], color ='green')
+        # intercept2 += (themax + data_perod['동해'][i])/2    
+        # plt.title("donghae") 
+        # plt.ylim([-8, 8])
 
-        plt.subplot(5,1,3)   
-        intercept3 += (themax - data_perod['울진'][i])/2
-        plt.plot([intercept3, intercept3 + data_perod['울진'][i]/4], [0, data_height['울진'][i]], color='green')
-        plt.plot([intercept3 + data_perod['울진'][i]/4, intercept3 + (3 * data_perod['울진'][i] / 4)], [data_height['울진'][i], -1 * data_height['울진'][i]], color='green')
-        plt.plot([intercept3 + (3 * data_perod['울진'][i] / 4), intercept3 + data_perod['울진'][i]], [-1 * data_height['울진'][i],0], color ='green')
-        intercept3 += (themax + data_perod['울진'][i])/2    
-        plt.title("ulzin")
-        plt.ylim([-8, 8])
+        # plt.subplot(5,1,3)   
+        # intercept3 += (themax - data_perod['울진'][i])/2
+        # plt.plot([intercept3, intercept3 + data_perod['울진'][i]/4], [0, data_height['울진'][i]], color='green')
+        # plt.plot([intercept3 + data_perod['울진'][i]/4, intercept3 + (3 * data_perod['울진'][i] / 4)], [data_height['울진'][i], -1 * data_height['울진'][i]], color='green')
+        # plt.plot([intercept3 + (3 * data_perod['울진'][i] / 4), intercept3 + data_perod['울진'][i]], [-1 * data_height['울진'][i],0], color ='green')
+        # intercept3 += (themax + data_perod['울진'][i])/2    
+        # plt.title("ulzin")
+        # plt.ylim([-8, 8])
 
-        plt.subplot(5,1,4)   
-        intercept4 += (themax - data_perod['포항'][i])/2
-        plt.plot([intercept4, intercept4 + data_perod['포항'][i]/4], [0, data_height['포항'][i]], color='green')
-        plt.plot([intercept4 + data_perod['포항'][i]/4, intercept4 + (3 * data_perod['포항'][i] / 4)], [data_height['포항'][i], -1 * data_height['포항'][i]], color='green')
-        plt.plot([intercept4 + (3 * data_perod['포항'][i] / 4), intercept4 + data_perod['포항'][i]], [-1 * data_height['포항'][i],0], color ='green')
-        intercept4 += (themax + data_perod['포항'][i])/2    
-        plt.title("pohang")
-        plt.ylim([-8, 8])
+        # plt.subplot(5,1,4)   
+        # intercept4 += (themax - data_perod['포항'][i])/2
+        # plt.plot([intercept4, intercept4 + data_perod['포항'][i]/4], [0, data_height['포항'][i]], color='green')
+        # plt.plot([intercept4 + data_perod['포항'][i]/4, intercept4 + (3 * data_perod['포항'][i] / 4)], [data_height['포항'][i], -1 * data_height['포항'][i]], color='green')
+        # plt.plot([intercept4 + (3 * data_perod['포항'][i] / 4), intercept4 + data_perod['포항'][i]], [-1 * data_height['포항'][i],0], color ='green')
+        # intercept4 += (themax + data_perod['포항'][i])/2    
+        # plt.title("pohang")
+        # plt.ylim([-8, 8])
     
-        plt.subplot(5,1,5)   
-        intercept5 += (themax - data_perod['울산'][i])/2
-        plt.plot([intercept5, intercept5 + data_perod['울산'][i]/4], [0, data_height['울산'][i]], color='green')
-        plt.plot([intercept5 + data_perod['울산'][i]/4, intercept5 + (3 * data_perod['울산'][i] / 4)], [data_height['울산'][i], -1 * data_height['울산'][i]], color='green')
-        plt.plot([intercept5 + (3 * data_perod['울산'][i] / 4), intercept5 + data_perod['울산'][i]], [-1 * data_height['울산'][i],0], color ='green')
-        intercept5 += (themax + data_perod['울산'][i])/2    
-        plt.title("ulsan")
-        plt.xlabel(date, fontdict={'size':4})
-        plt.ylim([-8, 8])
+        # plt.subplot(5,1,5)   
+        # intercept5 += (themax - data_perod['울산'][i])/2
+        # plt.plot([intercept5, intercept5 + data_perod['울산'][i]/4], [0, data_height['울산'][i]], color='green')
+        # plt.plot([intercept5 + data_perod['울산'][i]/4, intercept5 + (3 * data_perod['울산'][i] / 4)], [data_height['울산'][i], -1 * data_height['울산'][i]], color='green')
+        # plt.plot([intercept5 + (3 * data_perod['울산'][i] / 4), intercept5 + data_perod['울산'][i]], [-1 * data_height['울산'][i],0], color ='green')
+        # intercept5 += (themax + data_perod['울산'][i])/2    
+        # plt.title("ulsan")
+        # plt.xlabel(date, fontdict={'size':4})
+        # plt.ylim([-8, 8])
        
     
-    plt.show(block= False)
-    plt.pause(1)
-    plt.close()
+    # plt.show(block= False)
+    # plt.pause(1)
+    # plt.close()

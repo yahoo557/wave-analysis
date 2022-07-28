@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동해 너울성 파도 예측 시스템</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+    </script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://unpkg.com/flowbite@1.5.1/dist/datepicker.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="../static/css/main.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/litepicker/2.0.11/litepicker.js"></script>
+</head>
+
+<body>
+    <div class="flex-30">
+        <div id="header">
+            <h1 class="nanumbarungothic">동해 너울성 파도 예측 시스템</h1>
+        </div>
+        <div id="controller">
+            <div class="controller-item" id="select">
+                <p>select bouy</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" checked>
+                    <label class="form-check-label " for="flexCheckDefault">
+                        울릉도(21229)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="2" id="flexCheckDefault" checked>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        동해(22105)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="3" id="flexCheckDefault" checked>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        포항(22106)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="4" id="flexCheckDefault" checked>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        울산(22189)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="5" id="flexCheckDefault" checked>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        울진(22190)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="6" id="flexCheckDefault" checked>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        동해78(22302)
+                    </label>
+                </div>
+            </div>
+            <div class="controller-item" id="date">
+                <p>select period</p>
+                <input id ="datePicker">
+                
+            </div>
+
+        </div>
+        <button type="button" class="btn btn-primary" style="margin-left: 10vw;"
+            onclick="get_selected_bouy()">실행</button>
+    </div>
+    <div class="flex-70" id="chart-container" style="overflow:scroll">
+
+    </div>
+
+    <script language="JavaScript">
+        $(function(){
+        
+        let datePicker = document.getElementById('datePicker');
+        let picker = new Litepicker({
+            element: datePicker,
+            format: 'YYYY-MM-DD'
+        });
+        
+        let dateRangePicker = document.getElementById('dateRangePicker');
+        let pickerRange = new Litepicker({
+            element: dateRangePicker,
+            format: 'YYYY-MM-DD',
+            singleMode: false,
+        });
+    });
+    
+        var period = 1000
+        var selected_bouy = []
+        var buoy_id = ""
+        function get_selected_bouy() {
+            //체크된 부이 체크박스 value를 가져온다
+            var checkbox = document.getElementsByClassName('form-check-input')
+
+            for (element in checkbox) {
+                if (checkbox[element].checked) {
+                    selected_bouy.push(checkbox[element].value)
+                    buoy_id += checkbox[element].value
+                }
+            }
+            append_container()
+            get_data(buoy_id, '2017.1.9', '2017.1.10')
+
+        }
+        function append_container() {
+            console.log('append_container 호출')
+            selected_bouy.forEach(element => {
+                const new_container = document.createElement('div')
+                new_container.id = `container-${element}`
+                new_container.style = "width: 100%; height: 400px; margin: 0 auto; border : 1px black solid;"
+                document.getElementById('chart-container').appendChild(new_container)
+            });
+        }
+
+        function append_chart(result, start, end) {
+            const buoy_template = { 1: "울릉도", 2: "동해", 3: "포항", 4: "울산", 5: "울진", 6: "동해78" }
+            var date = [1, 2, 3, 4]
+
+            selected_bouy.forEach(element => {
+                var series_data = result.data[element].slice(0, 7)
+                console.log(series_data)
+                const chart = Highcharts.chart(`container-${element}`, {
+                    chart: {
+                        animation: false,
+                        // type: 'column'
+                    },
+                    title: {
+                        text: `${buoy_template[element]}`
+                    },
+                    xAxis: {
+                        categories: ['2014-01-01-00:00', '2014-01-01-00:30', '2014-01-01-01:00', '2014-01-01-01:30', '2014-01-01-02:00', '2014-01-01-02:30', '2014-01-01-03:00']
+                    },
+                    yAxis: {
+                        title: {
+                            text: '파고(m)'
+                        },
+
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle'
+                    }, series: [{
+                        name: '유의파고',
+                        data: series_data
+                    }]
+                })
+            })
+
+        }
+        function get_data(buoy_id, start, end) {
+            console.log('get_data 호출 : url', `http://0.0.0.0:8002/buoy/?buoy_id=${buoy_id}&start=${start}&end=${end}`)
+            $.ajax({
+                url: `http://0.0.0.0:8002/buoy/?buoy_id=${buoy_id}&start=${start}&end=${end}`,
+                type: "GET",
+                success: function (result) {
+                    if (result) {
+                        // console.log(result.data[1])
+                        append_chart(result, start, end)
+                    }
+                }
+            })
+
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+
+            // const chart = Highcharts.chart('container', {
+            //     chart: {
+            //         animation: false
+            //         type: 'column'
+            //     },
+            //     title: {
+            //         text: '울릉도 부이 데이터 차트'
+            //     },
+            //     xAxis: {
+            //         categories: ['2014-01-01-00:00', '2014-01-01-00:30', '2014-01-01-01:00', '2014-01-01-01:30', '2014-01-01-02:00', '2014-01-01-02:30', '2014-01-01-03:00']
+            //     },
+            //     yAxis: {
+            //         title: {
+            //             text: '파고(m)'
+            //         }
+            //     },
+            //     series: [{
+            //         name: '최대',
+            //         data: [1, 0, 4, 3, 5, 7, 8] 
+            //     }, {
+            //         name: '유이',
+            //         data: [5, 7, 3, 2, 1, 2, 4]
+            //     }, {
+            //         name: '평균',
+            //         data: [5, 7, 3, 2, 1, 2, 3]
+            //     }]
+            // });
+
+        });
+    </script>
+    
+</body>
+
+</html>
