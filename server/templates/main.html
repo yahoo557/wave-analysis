@@ -67,8 +67,14 @@
             </div>
             <div class="controller-item" id="date">
                 <p>select period</p>
-                <input id ="datePicker">
-                
+                <input id="dateFirst" placeholder="시작일" style="display : none">
+                <input id="dateStart" placeholder="시작일"><input id="dateEnd" placeholder="종료일">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="live" id="liveCheck" onclick="chage_date_input()" >
+                    <label class="form-check-label" for="liveCheck">
+                        실시간 모드
+                    </label>
+                </div>
             </div>
 
         </div>
@@ -76,33 +82,54 @@
             onclick="get_selected_bouy()">실행</button>
     </div>
     <div class="flex-70" id="chart-container" style="overflow:scroll">
-
     </div>
 
     <script language="JavaScript">
-        $(function(){
         
-        let datePicker = document.getElementById('datePicker');
-        let picker = new Litepicker({
-            element: datePicker,
-            format: 'YYYY-MM-DD'
+        // 실시간 모드 ON 일경우
+        $(function () {
+            var dateStart = document.getElementById('dateFirst');
+            const picker = new Litepicker({
+                element : dateStart,
+                format: 'YYYY.M.D'
+                
+            })
+        })
+
+        // 실시간 모드 OFF 일경우
+        $(function () {
+            var dateStart = document.getElementById('dateStart');
+            var dateEnd = document.getElementById('dateEnd');
+            var dateFirst = document.getElementById('dateFirst');
+            var pickerRange = new Litepicker({
+                element: dateStart,
+                elementEnd: dateEnd,
+                format: 'YYYY.M.D',
+                singleMode: false,
+                allowRepick: true,
+            });
         });
-        
-        let dateRangePicker = document.getElementById('dateRangePicker');
-        let pickerRange = new Litepicker({
-            element: dateRangePicker,
-            format: 'YYYY-MM-DD',
-            singleMode: false,
-        });
-    });
-    
-        var period = 1000
+        function chage_date_input(){
+            if(document.getElementById('liveCheck').checked){
+                document.getElementById('dateEnd').style.display = "none"
+                document.getElementById('dateStart').style.display = "none"
+                document.getElementById('dateFirst').style.display = "block"
+            }
+            else{
+                document.getElementById('dateEnd').style.display = "block"
+                document.getElementById('dateStart').style.display = "block"
+                document.getElementById('dateFirst').style.display = "none"
+            }
+        }
+
+
         var selected_bouy = []
         var buoy_id = ""
+
         function get_selected_bouy() {
+            init_container()
             //체크된 부이 체크박스 value를 가져온다
             var checkbox = document.getElementsByClassName('form-check-input')
-
             for (element in checkbox) {
                 if (checkbox[element].checked) {
                     selected_bouy.push(checkbox[element].value)
@@ -110,11 +137,24 @@
                 }
             }
             append_container()
-            get_data(buoy_id, '2017.1.9', '2017.1.10')
-
+            if(document.getElementById('liveCheck').checked){
+                get_live_data(buoy_id, dateFirst.value);
+            }
+            else{
+                get_data(buoy_id, dateStart.value, dateEnd.value)
+            }
+            
+        }
+        function init_container() {
+            selected_bouy = []
+            buoy_id = ""
+            var container = document.getElementById('chart-container')
+            while (container.hasChildNodes()) {
+                container.removeChild(container.childNodes[0])
+            }
         }
         function append_container() {
-            console.log('append_container 호출')
+
             selected_bouy.forEach(element => {
                 const new_container = document.createElement('div')
                 new_container.id = `container-${element}`
@@ -125,57 +165,89 @@
 
         function append_chart(result, start, end) {
             const buoy_template = { 1: "울릉도", 2: "동해", 3: "포항", 4: "울산", 5: "울진", 6: "동해78" }
-            var date = [1, 2, 3, 4]
-
+            var entry_data = result.data
             selected_bouy.forEach(element => {
-                var series_data = result.data[element].slice(0, 7)
-                console.log(series_data)
-                const chart = Highcharts.chart(`container-${element}`, {
-                    chart: {
-                        animation: false,
-                        // type: 'column'
-                    },
-                    title: {
-                        text: `${buoy_template[element]}`
-                    },
-                    xAxis: {
-                        categories: ['2014-01-01-00:00', '2014-01-01-00:30', '2014-01-01-01:00', '2014-01-01-01:30', '2014-01-01-02:00', '2014-01-01-02:30', '2014-01-01-03:00']
-                    },
-                    yAxis: {
-                        title: {
-                            text: '파고(m)'
-                        },
-
-                    },
-                    legend: {
-                        layout: 'vertical',
-                        align: 'right',
-                        verticalAlign: 'middle'
-                    }, series: [{
-                        name: '유의파고',
-                        data: series_data
-                    }]
+                var part_data = entry_data[element].slice(0, 7)
+                var series_data = []
+                part_data.forEach(data => {
+                    series_data.push(data)
                 })
+                var i = -1
+                const chart = Highcharts.chart(`container-${element}`, {
+                    // events: {
+                    //     load: function () {
+
+                    //         // set up the updating of the chart each second
+                    //         var series = this.series[0];
+                    //         setInterval(function () {
+                    //             var x = 1, // current time
+                    //                 y = 1;
+                    //             series.addPoint([x, y], true, true);
+                    //         }, 1000);
+                    //     }
+                    // },
+                    chart: {
+                            animation: false,
+                            // type: 'column'
+                        },
+                        title: {
+                            text: `${buoy_template[element]}`
+                        },
+                        // xAxis: {
+                        //     series: [{
+                        //         data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                        //     }],
+                        //     labels: {
+                        //         formatter() {
+                        //             return `<span style="display: none">${this.value}</span>`
+                        //         }
+                        //     }
+                        // },
+                        // yAxis: {
+
+                        //     title: {
+                        //         text: '파고(m)'
+                        //     },
+                        // },
+                        // legend: {
+                        //     layout: 'vertical',
+                        //     align: 'right',
+                        //     verticalAlign: 'middle'
+                        // }, 
+                        series: [{
+                            name: '유의파고',
+                            data: series_data
+                        }]
+                    })
             })
 
         }
         function get_data(buoy_id, start, end) {
-            console.log('get_data 호출 : url', `http://0.0.0.0:8002/buoy/?buoy_id=${buoy_id}&start=${start}&end=${end}`)
             $.ajax({
                 url: `http://0.0.0.0:8002/buoy/?buoy_id=${buoy_id}&start=${start}&end=${end}`,
                 type: "GET",
                 success: function (result) {
                     if (result) {
-                        // console.log(result.data[1])
                         append_chart(result, start, end)
                     }
                 }
             })
-
         }
-
+        function get_live_data(buoy_id, start){
+            $.ajax({
+                url: `http://0.0.0.0:8002/live/?buoy_id=${buoy_id}&start=${start}`,
+                type: "GET",
+                success: function (result) {
+                    // if (result) {
+                    //     append_chart(result, start)
+                    // }
+                }
+            })
+        }
         document.addEventListener('DOMContentLoaded', function () {
-
+            
+            
+        
 
 
             // const chart = Highcharts.chart('container', {
@@ -208,7 +280,7 @@
 
         });
     </script>
-    
+
 </body>
 
 </html>

@@ -43,9 +43,12 @@
 #controller{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+
 }
 .controller-item{
     margin: 3vh;
+    
 }
 body{
     background: linear-gradient(45deg, #008080, #2e508d);
@@ -67,3 +70,4 @@ body{
     width: 70vw;
     height: 90vh;
 }
+

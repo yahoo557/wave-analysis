@@ -9,7 +9,12 @@ from numpy import block
 import pandas as pd
 import sys 
 from typing import Union
-
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from pymongo import MongoClient
+from datetime import datetime
+import json
 
 import uvicorn
 
@@ -38,10 +43,12 @@ async def read_item(request: Request, buoy_id: str, start:str, end:str,  q: Unio
     alldata_direction = alldata_direction.fillna(0)
     start_index = alldata_height.loc[alldata_height["일시"]=="%s 00:00" %start].index.values[0]
     end_index = alldata_height.loc[alldata_height["일시"]=="%s 00:00" %end].index.values[0]
-    for i in buoy_id:
-        data_total[int(i)] =  alldata_height[buoy_template[int(i)]][start_index:end_index].to_list()
-        
-        
+    if(end):
+        for i in buoy_id:
+            data_total[int(i)] =  alldata_height[buoy_template[int(i)]][start_index:end_index].to_list()
+    else :
+        for i in buoy_id:
+            data_total[int(i)] =  alldata_height[buoy_template[int(i)]][start_index:].to_list()
 
     
     # context = {"request": request,"buoy_id":buoy_id, "data_period":data_period, "data_height":data_height, "data_direction":data_direction}
@@ -51,8 +58,25 @@ async def read_item(request: Request, buoy_id: str, start:str, end:str,  q: Unio
 
     return JSONResponse(content=res)
     # return  templates.TemplateResponse("chart.html", context)
+@app.get("/live/")
+async def read_item(request: Request, start:str, buoy_id: str, q: Union[str, None] = None):
+    def set_chrome_driver():
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('headless')
+        chrome_options.add_argument('window-size=1920x1080')
+        chrome_options.add_argument("disable-gpu")
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        return driver
 
+    def get_half_time():
+        time_now = datetime.now().timestamp()
+        halftime= time_now - time_now%1800
+        return halftime
 
+    
+        
+    res = jsonable_encoder({"data":data_total})
+    return JSONResponse(content=res)
 
 if __name__ == "__main__":
     uvicorn.run(app, host ="0.0.0.0", port = 8002 ) 

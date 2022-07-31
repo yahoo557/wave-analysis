@@ -1,50 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+
     <title>chart</title>
 </head>
-<body>
-    <div class="flex-70" id ="chart-container" style="overflow:scroll">
-        <div id="container">
 
-        </div>
-    </div>
+<body>
+    <div id="container"></div>
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        
-        const data = "{{ data }}"
-        console.log(data)
-    // const chart = Highcharts.chart('container', {
-    //             chart: {
-    //                 animation: false,
-    //                 type: 'column'
-    //             },
-    //             title: {
-    //                 text: '울릉도 부이 데이터 차트'
-    //             },
-    //             xAxis: {
-    //                 categories: ['2014-01-01-00:00', '2014-01-01-00:30', '2014-01-01-01:00', '2014-01-01-01:30', '2014-01-01-02:00', '2014-01-01-02:30', '2014-01-01-03:00']
-    //             },
-    //             yAxis: {
-    //                 title: {
-    //                     text: '파고(m)'
-    //                 }
-    //             },
-    //             series: [{
-    //                 name: '최대',
-    //                 data: [1, 0, 4, 3, 5, 7, 8]
-    //             }, {
-    //                 name: '유이',
-    //                 data: [5, 7, 3, 2, 1, 2, 4]
-    //             }, {
-    //                 name: '평균',
-    //                 data: [5, 7, 3, 2, 1, 2, 3]
-    //             }]
-    //         });
-    })
+        // Create the chart
+        Highcharts.stockChart('container', {
+            chart: {
+                events: {
+                    load: function () {
+                        // set up the updating of the chart each second
+                        var series = this.series[0];
+                        setInterval(function () {
+                            if(new(Date()).getTime())
+                            var x = (new Date()).getTime(), // current time
+                                y = ;
+                            series.addPoint([x, y], true, true);
+                        }, 2000);
+                    }
+                }
+            },
+
+            accessibility: {
+                enabled: false
+            },
+
+            time: {
+                useUTC: false
+            },
+
+            rangeSelector: {
+                buttons: [{
+                    count: 1,
+                    type: 'minute',
+                    text: '1M'
+                }, {
+                    count: 5,
+                    type: 'minute',
+                    text: '5M'
+                }, {
+                    type: 'all',
+                    text: 'All'
+                }],
+                inputEnabled: false,
+                selected: 0
+            },
+
+            title: {
+                text: 'Live random data'
+            },
+
+            exporting: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'Random data',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+
+                    for (i = -999; i <= 0; i += 1) {
+                        data.push([
+                            time + i * 2000,
+                            Math.round(Math.random() * 100)
+                        ]);
+                    }
+                    return data;
+                }())
+            }]
+        });
+    });
 </script>
+
 </html>

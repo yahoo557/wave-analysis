@@ -44,22 +44,22 @@ intercept2 = 0
 intercept3 = 0
 intercept4 = 0
 intercept5 = 0
+[intercept1, intercept1 + data_perod['울릉도'][i]/4], [0, data_height['울릉도'][i]]
 
+for j in range(74927, alldata.shape[0] - 14):
+    fig = plt.figure(figsize=(8,5))  
+    date = []
+    for i in range(j , j + 7):
+        date.append(data_perod["일시"][i])
 
-# for j in range(74927, alldata.shape[0] - 14):
-#     fig = plt.figure(figsize=(8,5))
-#     date = []
-#     for i in range(j , j + 7):
-#         date.append(data_perod["일시"][i])
-
-#         plt.subplot(5,1,1)    
-#         intercept1 += (themax - data_perod['울릉도'][i])/2
-#         plt.plot([intercept1, intercept1 + data_perod['울릉도'][i]/4], [0, data_height['울릉도'][i]], color='green')
-#         plt.plot([intercept1 + data_perod['울릉도'][i]/4, intercept1 + (3 * data_perod['울릉도'][i] / 4)], [data_height['울릉도'][i], -1 * data_height['울릉도'][i]], color='green')
-#         plt.plot([intercept1 + (3 * data_perod['울릉도'][i] / 4), intercept1 + data_perod['울릉도'][i]], [-1 * data_height['울릉도'][i],0], color ='green')
-#         intercept1 += (themax + data_perod['울릉도'][i])/2
-#         plt.title("ulreung")
-#         plt.ylim([-8, 8])
+        plt.subplot(2,1,1)    
+        intercept1 += (themax - data_perod['울릉도'][i])/2
+        plt.plot([intercept1, intercept1 + data_perod['동해'][i]/4], [0, data_height['동해'][i]], color='green')
+        plt.plot([intercept1 + data_perod['울릉도'][i]/4, intercept1 + (3 * data_perod['울릉도'][i] / 4)], [data_height['울릉도'][i], -1 * data_height['울릉도'][i]], color='green')
+        plt.plot([intercept1 + (3 * data_perod['울릉도'][i] / 4), intercept1 + data_perod['울릉도'][i]], [-1 * data_height['울릉도'][i],0], color ='green')
+        intercept1 += (themax + data_perod['울릉도'][i])/2
+        plt.title("ulreung")
+        plt.ylim([-8, 8])
         
         # plt.subplot(5,1,2)
         # intercept2 += (themax - data_perod['동해'][i])/2
@@ -99,6 +99,6 @@ intercept5 = 0
         # plt.ylim([-8, 8])
        
     
-    # plt.show(block= False)
-    # plt.pause(1)
-    # plt.close()
+    plt.show(block= False)
+    plt.pause(1)
+    plt.close()
