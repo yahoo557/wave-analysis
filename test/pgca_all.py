@@ -28,6 +28,8 @@ start_index = data_height.loc[data_height["일시"]=="2011.1.4 00:00" ].index.va
 end_index = data_height.loc[data_height["일시"]=="2012.1.2 00:00" ].index.values[0]
 template = {1:"울릉도", 2:"동해", 3:"포항", 4:"울산", 5:"울진", 6:"동해78"}
 
+# print(data_perod['일시'])
+
 print(template[5])
 # print(type(data_height['울릉도'][start_index:end_index].to_list()))
 
@@ -44,7 +46,7 @@ intercept2 = 0
 intercept3 = 0
 intercept4 = 0
 intercept5 = 0
-[intercept1, intercept1 + data_perod['울릉도'][i]/4], [0, data_height['울릉도'][i]]
+
 
 for j in range(74927, alldata.shape[0] - 14):
     fig = plt.figure(figsize=(8,5))  
@@ -54,7 +56,7 @@ for j in range(74927, alldata.shape[0] - 14):
 
         plt.subplot(2,1,1)    
         intercept1 += (themax - data_perod['울릉도'][i])/2
-        plt.plot([intercept1, intercept1 + data_perod['동해'][i]/4], [0, data_height['동해'][i]], color='green')
+        plt.plot([intercept1, intercept1 + data_perod['울릉도'][i]/4], [0, data_height['울릉도'][i]], color='green')
         plt.plot([intercept1 + data_perod['울릉도'][i]/4, intercept1 + (3 * data_perod['울릉도'][i] / 4)], [data_height['울릉도'][i], -1 * data_height['울릉도'][i]], color='green')
         plt.plot([intercept1 + (3 * data_perod['울릉도'][i] / 4), intercept1 + data_perod['울릉도'][i]], [-1 * data_height['울릉도'][i],0], color ='green')
         intercept1 += (themax + data_perod['울릉도'][i])/2

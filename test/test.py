@@ -1,20 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
-
-# array = [3,4,5,1,1,2,1,2,3]
-# array2= [1,2,1,3,1,2,1,1,1]
-array = [1,2,1,2,1,1,1,1,2]
-array2 = [1,2,1,3,4,1,5,1,2]
-max = 6
-intercept = 0
-for j in range(len(array)-3):
-    for i in range(j, j+3):
-        intercept += (max - array[i])/2
-        plt.plot([intercept, intercept + array[i]/4], [0, array2[i]], color='green')
-        plt.plot([intercept + array[i]/4, intercept + (3 * array[i] / 4)], [array2[i], -1 * array2[i]], color='green')
-        plt.plot([intercept + (3 * array[i] / 4), intercept + array[i]], [-1 * array2[i],0], color ='green')
-        intercept += (max + array[i])/2
-    plt.show(block=False)
-    plt.pause(2)
-    plt.close()
-
+import pandas as pd
+data_period = pd.read_csv("/Users/seungbaek/Desktop/호텔/파도분석/data/combineddata/동해바다_유의파고_통합본.csv", encoding="cp949")
+print(np.linspace(93263, len(data_period), len(data_period),  endpoint=True, dtype='int' ))
+       
