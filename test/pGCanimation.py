@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import mpld3
-
+from matplotlib import animation, rc
+from IPython.display import HTML
 from matplotlib.animation import FuncAnimation
 
 alldata = pd.read_csv("/Users/seungbaek/Desktop/호텔/파도분석/data/combineddata/동해바다_파주기_통합본.csv",encoding='cp949')
@@ -61,5 +62,11 @@ fig = plt.gcf()
 
 anim = FuncAnimation(fig=fig, func=animate, init_func=init, interval=1000)
 
-plt.show()
-mpld3.show(fig)
+# plt.show()
+# plt.tojshtml()
+# mpld3.show(fig)
+rc('animation', html='jshtml')
+rc
+f = open('/Users/seungbaek/Desktop/호텔/파도분석/test/new.txt', 'w')
+f.write(HTML(anim.to_jshtml()).data)
+f.close
