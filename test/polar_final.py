@@ -28,8 +28,8 @@ import pandas as pd
 def animate(i):
     return
 
-data_period = pd.read_csv("동해바다_파주기_통합본.csv", encoding="cp949")
-data_direction = pd.read_csv("동해바다_파향_통합본.csv", encoding="cp949")
+data_period = pd.read_csv("/Users/seungbaek/Desktop/호텔/파도분석/data/combineddata/동해바다_파주기_통합본.csv", encoding="cp949")
+data_direction = pd.read_csv("/Users/seungbaek/Desktop/호텔/파도분석/data/combineddata/동해바다_파향_통합본.csv", encoding="cp949")
 
 
 for i in range(93272, len(data_direction)):

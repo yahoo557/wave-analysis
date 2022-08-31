@@ -17,6 +17,9 @@ ax[0].plot(theta1, r1)
 ax[1].plot(theta2, r2)
 
 
+
+
+
 for i in range(3):
     ax[i].set_rmax(10) 
     ax[i].set_rticks()
