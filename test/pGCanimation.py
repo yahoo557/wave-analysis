@@ -1,4 +1,5 @@
 from numpy import block
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -58,7 +59,7 @@ def animate(i):
             
             
         date = []    
-        for j in range(i+100000, i+100007):
+        for j in range(i+104000, i+104007):
             percentage = data_perod[selcetion[t]][j]/themax
             date.append(data_perod['일시'][j])
             x0 = int(100*(1-percentage)/2)+k*100
@@ -68,12 +69,11 @@ def animate(i):
             plt.plot([x0,x1],[0,data_height[selcetion[t]][j]], color='green')
             plt.plot([x1,x2],[data_height[selcetion[t]][j],-data_height[selcetion[t]][j]], color='green')
             plt.plot([x2,x3],[-data_height[selcetion[t]][j],0], color ='green')
-            theta = math.radians(data_direction[selcetion[t]][j])
+            theta = math.radians(data_direction[selcetion[t]][j])*math.pi
+            dx = math.cos(theta)*data_perod[selcetion[t]][j]+tick_x[k]
+            dy = math.sin(theta)*data_perod[selcetion[t]][j]+5
+            plt.quiver(tick_x[k],5, data_direction[selcetion[t]][j]  ,data_perod[selcetion[t]][j])
             
-            plt.quiver(tick_x[k],5, math.cos(theta)*data_perod[selcetion[t]][j]+tick_x[k],math.sin(theta)*data_perod[selcetion[t]][j]+5)
-            
-            
-
             k+=1
         if t == 5:
             ax.set_xticks(tick_x, date, fontsize = 4)
@@ -83,15 +83,34 @@ def animate(i):
         
 
 fig = plt.gcf()
+
 # fig, axes = plt.subplots(nrows=5, ncols=1)
 
 anim = FuncAnimation(fig=fig, func=animate, init_func=init, interval=1000)
 
-
-
 plt.show()
-# rc('animation', html='jshtml')
-# rc
-# f = open('/Users/seungbaek/Desktop/호텔/파도분석/test/new.txt', 'w')
+# if os.path.isfile('/Users/seungbaek/Desktop/호텔/파도분석/server/templates/chart.html'):
+#     os.remove('/Users/seungbaek/Desktop/호텔/파도분석/server/templates/chart.html', )
+
+# # rc('animation', html='jshtml')
+# # rc
+# f = open('/Users/seungbaek/Desktop/호텔/파도분석/server/templates/chart.html', 'w')
+# f.write('''<!DOCTYPE html>
+# <html lang="en">
+# <head>
+#     <meta charset="UTF-8">
+#     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+#     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+#     <title>chart</title>
+# </head>
+# '''
+# )
 # f.write(HTML(anim.to_jshtml()).data)
+# f.write('''
+# <body>
+    
+# </body>
+
+# </html>'''
+# )
 # f.close

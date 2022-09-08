@@ -79,10 +79,10 @@
             </div>
 
         </div>
-        <button type="button" class="btn btn-primary" style="margin-left: 10vw;"
-            onclick="get_selected_bouy()">실행</button>
-            <!-- <button type="button" class="btn btn-primary" style="margin-left: 10vw;"
-            onclick="get_matplot()">실행</button> -->
+        <!-- <button type="button" class="btn btn-primary" style="margin-left: 10vw;"
+            onclick="get_selected_bouy()">실행</button> -->
+            <button type="button" class="btn btn-primary" style="margin-left: 10vw;"
+            onclick="get_matplot()">실행</button>
     </div>
     <div class="flex-70" id="chart-container" style="overflow:scroll">
     </div>
@@ -279,11 +279,15 @@
         }
         function get_matplot(){
             $.ajax({
-                url: 'http://0.0.0.0:8002/matplot',
+                url: 'http://115.160.104.134/matplot',
                 type: "GET",
                 success: function (result) {
                     if (result) {
-                        document.getElementById('chart-container').innerHTML(result)
+                        const new_container = document.createElement('iframe')
+                        new_container.id = 'chart'
+                        new_container.style = "width: 100%; height: 100%; margin: 0 auto; border : 1px black solid;"
+                        new_container.src = 'http://115.160.104.134/matplot_video'
+                        document.getElementById('chart-container').appendChild(new_container)
                     }
                 }
             })
