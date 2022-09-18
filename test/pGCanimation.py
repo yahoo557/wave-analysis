@@ -76,9 +76,11 @@ def animate(i):
             
             k+=1
         if t == 5:
-            ax.set_xticks(tick_x, date, fontsize = 4)
+            ax.set_xticks(tick_x, date, fontsize = 12)
             
-
+# 초단위 삭제,
+# 크기 키우기
+# 지도 띄우기
 
         
 

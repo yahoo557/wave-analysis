@@ -243,8 +243,7 @@ def mat_video():
                 plt.plot([x0,x1],[0,data_height[selcetion[t]][j]], color='green')
                 plt.plot([x1,x2],[data_height[selcetion[t]][j],-data_height[selcetion[t]][j]], color='green')
                 plt.plot([x2,x3],[-data_height[selcetion[t]][j],0], color ='green')
-                theta = math.radians(data_direction[selcetion[t]][j])
-                plt.quiver(tick_x[k],5, math.cos(theta)*data_perod[selcetion[t]][j]+tick_x[k],math.sin(theta)*data_perod[selcetion[t]][j]+5)
+                plt.quiver(tick_x[k],5, data_direction[selcetion[t]][j]  ,data_perod[selcetion[t]][j])
                 k+=1
             if t == 5:
                 ax.set_xticks(tick_x, date, fontsize = 4)
