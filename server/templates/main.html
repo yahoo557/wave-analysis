@@ -279,14 +279,16 @@
         }
         function get_matplot(){
             $.ajax({
-                url: 'http://115.160.104.134/matplot',
+                // url: 'http://115.160.104.134/matplot',
+                url: 'http:///0.0.0.0:8002/matplot',
                 type: "GET",
                 success: function (result) {
                     if (result) {
                         const new_container = document.createElement('iframe')
                         new_container.id = 'chart'
                         new_container.style = "width: 100%; height: 100%; margin: 0 auto; border : 1px black solid;"
-                        new_container.src = 'http://115.160.104.134/matplot_video'
+                        // new_container.src = 'http://115.160.104.134/matplot_video'
+                        new_container.src = 'http://0.0.0.0:8002/matplot_video'
                         document.getElementById('chart-container').appendChild(new_container)
                     }
                 }
